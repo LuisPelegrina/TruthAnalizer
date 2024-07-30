@@ -11,7 +11,7 @@ void read_tree()
 
     //Declare the variables
     
-    string strRuta = "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer/Data/ana_output_single_interaction_BNB.root";
+    string strRuta = "Data/ana_output_single_interaction_BNB.root";
     input = new TFile(strRuta.c_str());
     dir = (TDirectoryFile*)input->Get("ana");
    
