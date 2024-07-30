@@ -1,0 +1,1 @@
+scp lpelegri@sbndgpvm02.fnal.gov:/exp/sbnd/data/users/lpelegri/Truth_Example/analysisOutput.root ana_output_single_interaction_BNB.root

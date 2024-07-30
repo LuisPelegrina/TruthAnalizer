@@ -1,0 +1,3 @@
+/Users/luispelegrinagutierrez/Desktop/Doctorado/Truth_test/cmake-build-debug/CMakeFiles/Truth_test.dir
+/Users/luispelegrinagutierrez/Desktop/Doctorado/Truth_test/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/luispelegrinagutierrez/Desktop/Doctorado/Truth_test/cmake-build-debug/CMakeFiles/rebuild_cache.dir
