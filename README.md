@@ -17,7 +17,7 @@ This analizer is meant to only be used with files containing a single neutrino i
 ## Data download
 The folder ```Data``` is where the analized files are meant to be stored in order to be used in the example ```read_tree.C```. These files can be found inside the sbnd-gvpms nodes in the folder ```/exp/sbnd/data/users/lpelegri/Truth_Example/``` under the name ```analysis_output_truth_BNB_single_100k_events.root``` for 100k events and ```analysis_output_truth_BNB_single_100_events.root``` for 100 events.
 
-The code ```scp.sh``` is meant to be run in the terminal and downloads the Data directly into the ```Data``` folder, please read it and modify it before usage. If you are unable to access these folder ask Luis Pelegrina Gutiérrez (lpelegrina@ugr.es) for the files (Or generate them by asking any person in the group able to run the LArSoft analysis chain).
+The code ```download_data.sh``` is meant to be run in the terminal and downloads the Data directly into the ```Data``` folder, please read it and modify it before usage. If you are unable to access these folder ask Luis Pelegrina Gutiérrez (lpelegrina@ugr.es) for the files (Or generate them by asking any person in the group able to run the LArSoft analysis chain).
 
 
 ## Truth Tree definition
