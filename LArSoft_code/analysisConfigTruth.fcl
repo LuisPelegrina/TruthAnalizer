@@ -1,0 +1,12 @@
+BEGIN_PROLOG
+
+AnalyzeEventsTruth:
+{
+  module_type:      "AnalyzeEventsTruth"
+  MCTruthLabel:     "generator"
+  MCParticleLabel:  "largeant"
+  POTLabel: "generator"
+  Verbose: true
+}
+
+END_PROLOG

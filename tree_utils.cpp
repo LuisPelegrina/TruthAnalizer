@@ -3,72 +3,104 @@
 //
 #include "Includes.h"
 
-double POT;
-double spill;
+/*
+Declaration of the variables inside the tree, and information about the tree structure. Remember that the tree can be browsed by either opening a TBrowser in a root terminal or using commands in the terminal, go to https://root.cern.ch/root/htmldoc/guides/users-guide/Trees.html for more information on this.
+TREE STRUCTURE:
+The files produced by the analizer "run_analyzeEvents_Truth.fcl" follow the following structure:
+    TFile example_name.root (This is the file that you have saved in Data)
+        TDirectoryFile "ana" (This is a file inside the root_file where the trees are stored. It is automatically created by the analyzer);
+            TTree "tree" (This tree contains information about simulated neutrino interactions, it has information about the neutrino, the generator particles and the g4 particles, more information ahead)
+            TTree "sub_run_tree (This tree contains information about the subruns used to generate the neutrino events, more information ahead)
+*/
 
-string* file_name =  nullptr;
 
-//Event variables                                                                                                                                                           
-unsigned int event_ID;
-int num_gen_evts;
+/*
+SubRun tree: Generating neutrino simulations can be very time and resource consuming. For that reason when generating large amounts of data
+the generation is split among several independent simulations that are launched at the same time merged at the end. Each independent simulation is called a subrun.
+For example, for generating 100k neutrino single interaction events they are tipically splitted in batches of around 100 events. This leads to the output being splitted in 1000 subruns that each produce a file with 100 events on each file.
+ */
 
-//MCTruth variables
-//Consult https://internal.dunescience.org/doxygen/classsimb_1_1MCNeutrino.html#a8e213917487f1f5cd52ca5280d33a777 for information on the numbers meaning
-int nu_PDG;
-double nu_E0;
-double nu_weight; 
-unsigned int nu_interaction_mode;
-unsigned int nu_interaction_type;
-int nu_CC_NC;
-int nu_target;
-int nu_HitNuc;
-int nu_HitQuark;
-double nu_W;
-double nu_X;
-double nu_Y;
-double 	nu_QSqr;
+//Subrun tree variables:
+double POT; // Numbers of Protons that had to be simulated colliding in SBNDs Berilium target to generate all the neutrino interactions in the subrun, Protons On Target (POT)
+double spill; //Number of neutrino spills that had where simulated. This number is currently bugged and always output 0. As a general rule of thumb each spill contains around 1 or 2 neutrino interactions. For scaling the simulation to a target number of time of the BNB running is easier to use the POT.
+// If you really want to use spills just remember that 1 spill is approx 5*10^12 POT
+int num_gen_evts; //Number of events generated in each subrun. In this case it will always be 100 but may change if you do a preselection (remove some uninteresting events) on the analizer stage
 
-int gen_index;
 
-//MCTruth Particles variables
-std::vector<int>* gen_part_trackID = new std::vector<int>;
-std::vector<int>* gen_part_statusCode= new std::vector<int>;
-std::vector<int>* gen_part_mother = new std::vector<int>;
-std::vector<int>* gen_part_PDGcode = new std::vector<int>;
-std::vector<double>* gen_part_mass = new std::vector<double>;
-std::vector<double>* gen_part_E0 = new std::vector<double>;
-std::vector<double>* gen_part_start_pos_X = new std::vector<double>;
-std::vector<double>* gen_part_start_pos_Y = new std::vector<double>;
-std::vector<double>* gen_part_start_pos_Z = new std::vector<double>;
-std::vector<double>* gen_part_P0_Y = new std::vector<double>;
-std::vector<double>* gen_part_P0_Z = new std::vector<double>;
-std::vector<double>* gen_part_P0_X = new std::vector<double>;
+//Event tree: As previously stated in each subrun several neutrino interaction are included. In the event tree each entry correspond to a single neutrino interaction.
+//Event tree variables:
+//Variables concerning general event information:
+string* file_name =  nullptr; //Name of the reco2 file that contains this event information, specially useful if you want to look at events displays (As the given trees were generated using files in the "/pnfs/sbnd/scratch/" folder the files might be gone)
+unsigned int event_ID; // Number assigned to each event, in this case it goes from 1 to 100
+int gen_index; // Generator index, it should be 1 for genie, 2 for corsika and 0 for unknown
 
+//ALL variables with name nu_* give information of the initial neutrino interaction with an argon nucleus, proton or quark. A definition of each variable is given but go to https://internal.dunescience.org/doxygen/classsimb_1_1MCNeutrino.html#a8e213917487f1f5cd52ca5280d33a777 or https://internal.dunescience.org/doxygen/MCNeutrino_8h_source.html to see additional documentation.
+int nu_PDG; //PDG Code of the neutrino (number given to each type of particle, a document with all the PDGCodes can be found at https://pdg.lbl.gov/2020/reviews/rpp2020-rev-monte-carlo-numbering.pdf)
+double nu_E0; //Energy of the neutrino before interacting
+double nu_weight; //Weight given by the generator to the neutrino event, for events generated by GENIE is always 0 but it changes for other generators, as GiBUU
+unsigned int nu_interaction_mode; //Interaction Mode of the neutrino, it is given as an integer. What each integer represents can be consulted in this webpage,https://internal.dunescience.org/doxygen/MCNeutrino_8h_source.html but it is also written at the end of this file. It should only be used with events generated by genie.
+unsigned int nu_interaction_type; //Interaction type of the neutrino, kind of an expanded interaction mode with more information. Again what each integer represents can be consulted in this webpage,https://internal.dunescience.org/doxygen/MCNeutrino_8h_source.html but it is also written at the end of this file.
+int nu_CC_NC;   //Interger that gives wether the interaction is Charged Current (CC, 0) or Neutral Current (NC, 1)
+int nu_target;  //PDG of Nuclear target
+int nu_HitNuc;  //PDG of interacting nucleon (2212 (proton) or 2112 (neutron))
+int nu_HitQuark;  //PDG of interacting quark for Deep Inelastic Events (DIS) events only, as PDG code
+double nu_W; // Hadronic invariant mass, in GeV
+double nu_X;// Bjorken x=Q^2/(2M*(E_neutrino-E_lepton)), unitless
+double nu_Y;// Inelasticity y=1-(E_lepton/E_neutrino), unitless
+double 	nu_QSqr; // Momentum transfer Q^2, in GeV^2
+
+
+//IMPORTANT PRO TIP!!!
+// For variables that are a "std::vector" of any type for accessing then in a TTree a vector POINTER is needed, initialized either as a nullptr or as a new vector (If not the programm will crash).
+// This also applies for entries of type "string". Remember to create a pointer variable add a "*" after the variable type. Example: instead of writing "int exmp_var" write "int* exmp_var = nullptr"
+//IMPORTANT!!!!
+
+//Variables containing all the information of the particles at the generator stage, before the propagation by G4. It also includes particles that are not propagated by G4 but used to generate the final state.
+//All this variables are a vector, with each entry representing 1 particle.
+// For example, particle number 0 has his properties given by entry 0: its Id is gen_part_trackId->at(0), its status code is gen_part_statusCode->at(0)...
+//For the same reason particle 1 has its ID given by gen_part_trackId->at(1)...
+std::vector<int>* gen_part_trackID = new std::vector<int>; //ID of the particle
+std::vector<int>* gen_part_mother = new std::vector<int>; //ID of the mother of the given particle
+std::vector<int>* gen_part_statusCode= new std::vector<int>; // Status code of the particle, it is given by an integer. The meaning of each code can be found in the genie manual https://genie-docdb.pp.rl.ac.uk/DocDB/0000/000002/003/man.pdf, in page 235 but is also included at the end of this file.
+std::vector<int>* gen_part_PDGcode = new std::vector<int>; //PDG Code of the particle (number given to each type of particle, a document with all the PDGCodes can be found at https://pdg.lbl.gov/2020/reviews/rpp2020-rev-monte-carlo-numbering.pdf)
+std::vector<double>* gen_part_mass = new std::vector<double>; //Mass of the particle
+std::vector<double>* gen_part_E0 = new std::vector<double>; //Initial energy of the particle
+std::vector<double>* gen_part_start_pos_X = new std::vector<double>;//X coordinate of the starting position of the particle
+std::vector<double>* gen_part_start_pos_Y = new std::vector<double>;//Y coordinate of the starting position of the particle
+std::vector<double>* gen_part_start_pos_Z = new std::vector<double>;//Z coordinate of the starting position of the particle
+std::vector<double>* gen_part_P0_X = new std::vector<double>;//X coordinate of the starting momentum of the particle
+std::vector<double>* gen_part_P0_Y = new std::vector<double>;//Y coordinate of the starting momentum of the particle
+std::vector<double>* gen_part_P0_Z = new std::vector<double>;//Z coordinate of the starting momentum of the particle
+
+//Variables containing all the information of the particles at the geant4 stage, after the propagation by G4.
+//All this variables are a vector, with each entry representing 1 particle, as with the gen_part_*.
 //Geant4 Particles variables
-std::vector<int>* g4_part_trackID = new std::vector<int>;
-std::vector<int>* g4_part_mother = new std::vector<int>;
-std::vector<int>* g4_part_PDGcode = new std::vector<int>;
-std::vector<double>* g4_part_mass = new std::vector<double>;
-std::vector<double>* g4_part_E0 = new std::vector<double>;
-std::vector<double>* g4_part_Ef = new std::vector<double>;
+std::vector<int>* g4_part_trackID = new std::vector<int>; //ID of the particle
+std::vector<int>* g4_part_mother = new std::vector<int>; //ID of the mother of the given particle
+std::vector<int>* g4_part_PDGcode = new std::vector<int>; //PDG Code of the particle (number given to each type of particle, a document with all the PDGCodes can be found at https://pdg.lbl.gov/2020/reviews/rpp2020-rev-monte-carlo-numbering.pdf)
+std::vector<double>* g4_part_mass = new std::vector<double>;//Mass of the particle
+std::vector<double>* g4_part_E0 = new std::vector<double>;//Initial energy of the particle
+std::vector<double>* g4_part_Ef = new std::vector<double>;//Final energy of the particle
     
-std::vector<double>* g4_part_start_pos_X = new std::vector<double>;
-std::vector<double>* g4_part_start_pos_Y = new std::vector<double>;
-std::vector<double>* g4_part_start_pos_Z = new std::vector<double>;
-std::vector<double>* g4_part_end_pos_X = new std::vector<double>;
-std::vector<double>* g4_part_end_pos_Y = new std::vector<double>;
-std::vector<double>* g4_part_end_pos_Z = new std::vector<double>;
+std::vector<double>* g4_part_start_pos_X = new std::vector<double>;//X coordinate of the starting position of the particle
+std::vector<double>* g4_part_start_pos_Y = new std::vector<double>;//Y coordinate of the starting position of the particle
+std::vector<double>* g4_part_start_pos_Z = new std::vector<double>;//Z coordinate of the starting position of the particle
+std::vector<double>* g4_part_end_pos_X = new std::vector<double>;//X coordinate of the final position of the particle
+std::vector<double>* g4_part_end_pos_Y = new std::vector<double>;//Y coordinate of the final position of the particle
+std::vector<double>* g4_part_end_pos_Z = new std::vector<double>;//Z coordinate of the final position of the particle
 
-std::vector<double>* g4_part_P0_X = new std::vector<double>;
-std::vector<double>* g4_part_P0_Y = new std::vector<double>;
-std::vector<double>* g4_part_P0_Z = new std::vector<double>;
-std::vector<double>* g4_part_Pf_X = new std::vector<double>;
-std::vector<double>* g4_part_Pf_Y = new std::vector<double>;
-std::vector<double>* g4_part_Pf_Z = new std::vector<double>;
+std::vector<double>* g4_part_P0_X = new std::vector<double>;//X coordinate of the starting momentum of the particle
+std::vector<double>* g4_part_P0_Y = new std::vector<double>;//Y coordinate of the starting momentum of the particle
+std::vector<double>* g4_part_P0_Z = new std::vector<double>;//Z coordinate of the starting momentum of the particle
+std::vector<double>* g4_part_Pf_X = new std::vector<double>;//X coordinate of the final momentum of the particle
+std::vector<double>* g4_part_Pf_Y = new std::vector<double>;//Y coordinate of the final momentum of the particle
+std::vector<double>* g4_part_Pf_Z = new std::vector<double>;//Z coordinate of the final momentum of the particle
   
-std::vector<std::string>* g4_part_process = new std::vector<string>;
-std::vector<std::string>* g4_part_end_process = new std::vector<string>;
+std::vector<std::string>* g4_part_process = new std::vector<string>; //string containing the name of the process that generated the particle
+std::vector<std::string>* g4_part_end_process = new std::vector<string>;//string containing the name of the process that ended the particle
 
+
+//Function to set all the branches of the tree containing event information
 void set_branch(TTree* tree) {
 
   tree->SetBranchAddress("file_name", &file_name);
@@ -130,12 +162,93 @@ void set_branch(TTree* tree) {
   tree->SetBranchAddress("g4_part_end_process", &g4_part_end_process);
 }
 
-
-
-
+//Function to set all the branches of the tree containing subrun information
 void set_branch_subtree(TTree* tree) {
   tree->SetBranchAddress("POT", &POT);
   tree->SetBranchAddress("spill", &spill);
   tree->SetBranchAddress("num_gen_evts", &num_gen_evts);
-
 }
+
+/*
+Neutrino interaction  mode by number:
+kUnknownInteraction        =   -1
+kQE                        =    0,
+kRes                       =    1,
+kDIS                       =    2,
+kCoh                       =    3,
+kCohElastic                =    4,
+kElectronScattering        =    5,
+kIMDAnnihilation           =    6,
+kInverseBetaDecay          =    7,
+kGlashowResonance          =    8,
+kAMNuGamma                 =    9,
+kMEC                       =   10,
+kDiffractive               =   11,
+kEM                        =   12,
+kWeakMix                   =   13,
+ */
+
+/*
+Neutrino interaction type by number:
+kNuanceOffset              = 1000,                ///< offset to account for adding in Nuance codes to this enumkCCQE                      = kNuanceOffset +  1,  ///< charged current quasi-elastickNCQE                      = kNuanceOffset +  2,  ///< neutral current quasi-elastickResCCNuProtonPiPlus       = kNuanceOffset +  3,  ///< resonant charged current, nu p -> l- p pi+kResCCNuNeutronPi0         = kNuanceOffset +  4,  ///< resonant charged current, nu n -> l- p pi0
+kResCCNuNeutronPiPlus      = kNuanceOffset +  5,  ///< resonant charged current, nu n -> l- n pi+
+kResNCNuProtonPi0          = kNuanceOffset +  6,  ///< resonant neutral current, nu p -> nu p pi0
+kResNCNuProtonPiPlus       = kNuanceOffset +  7,  ///< resonant neutral current, nu p -> nu p pi+
+kResNCNuNeutronPi0         = kNuanceOffset +  8,  ///< resonant neutral current, nu n -> nu n pi0
+kResNCNuNeutronPiMinus     = kNuanceOffset +  9,  ///< resonant neutral current, nu n -> nu p pi-
+kResCCNuBarNeutronPiMinus  = kNuanceOffset + 10,  ///< resonant charged current, nubar n -> l+ n pi-
+kResCCNuBarProtonPi0       = kNuanceOffset + 11,  ///< resonant charged current, nubar p -> l+ n pi0
+kResCCNuBarProtonPiMinus   = kNuanceOffset + 12,  ///< resonant charged current, nubar p -> l+ p pi-
+kResNCNuBarProtonPi0       = kNuanceOffset + 13,  ///< resonant charged current, nubar p -> nubar p pi0
+kResNCNuBarProtonPiPlus    = kNuanceOffset + 14,  ///< resonant charged current, nubar p -> nubar n pi+
+kResNCNuBarNeutronPi0      = kNuanceOffset + 15,  ///< resonant charged current, nubar n -> nubar n pi0
+kResNCNuBarNeutronPiMinus  = kNuanceOffset + 16,  ///< resonant charged current, nubar n -> nubar p pi-
+kResCCNuDeltaPlusPiPlus    = kNuanceOffset + 17,
+kResCCNuDelta2PlusPiMinus  = kNuanceOffset + 21,
+kResCCNuBarDelta0PiMinus   = kNuanceOffset + 28,
+kResCCNuBarDeltaMinusPiPlus= kNuanceOffset + 32,
+kResCCNuProtonRhoPlus      = kNuanceOffset + 39,
+kResCCNuNeutronRhoPlus     = kNuanceOffset + 41,
+kResCCNuBarNeutronRhoMinus = kNuanceOffset + 46,
+kResCCNuBarNeutronRho0     = kNuanceOffset + 48,
+kResCCNuSigmaPlusKaonPlus  = kNuanceOffset + 53,
+kResCCNuSigmaPlusKaon0     = kNuanceOffset + 55,
+kResCCNuBarSigmaMinusKaon0 = kNuanceOffset + 60,
+kResCCNuBarSigma0Kaon0     = kNuanceOffset + 62,
+kResCCNuProtonEta          = kNuanceOffset + 67,
+kResCCNuBarNeutronEta      = kNuanceOffset + 70,
+kResCCNuKaonPlusLambda0    = kNuanceOffset + 73,
+kResCCNuBarKaon0Lambda0    = kNuanceOffset + 76,
+kResCCNuProtonPiPlusPiMinus= kNuanceOffset + 79,
+kResCCNuProtonPi0Pi0       = kNuanceOffset + 80,
+kResCCNuBarNeutronPiPlusPiMinus = kNuanceOffset + 85,
+kResCCNuBarNeutronPi0Pi0   = kNuanceOffset + 86,
+kResCCNuBarProtonPi0Pi0    = kNuanceOffset + 90,
+kCCDIS                     = kNuanceOffset + 91,  ///< charged current deep inelastic scatter
+kNCDIS                     = kNuanceOffset + 92,  ///< charged current deep inelastic scatter
+kUnUsed1                   = kNuanceOffset + 93,
+kUnUsed2                   = kNuanceOffset + 94,
+kCCQEHyperon               = kNuanceOffset + 95,
+kNCCOH                     = kNuanceOffset + 96,
+kCCCOH                     = kNuanceOffset + 97,  ///< charged current coherent pion
+kNuElectronElastic         = kNuanceOffset + 98,  ///< neutrino electron elastic scatter
+kInverseMuDecay            = kNuanceOffset + 99,  ///< inverse muon decay
+kMEC2p2h                   = kNuanceOffset + 100  ///< extension of nuance encoding for MEC / 2p2h
+
+ */
+
+/*
+ Status code of the particles:
+Undefined: kIStUndefined -1
+Initial state: kIStInitialState 0
+Stable final state: kIstStableFinalState 1
+Intermediate state: kIStIntermediateState 2
+Decayed state: kIStDecayedState 3
+Nucleon target: kIStNucleonTarget 11
+DIS pre-fragm. hadronic state: kIStDISPreFragmHadronicState 12
+Resonant pre-decayed state: kIStPreDecayResonantState 13
+Hadron in the nucleus: kIStHadronInTheNucleus 14
+Final state nuclear remnant: kIStFinalStateNuclearRemnant 15
+Nucleon cluster target: kIStNucleonClusterTarget 16
+
+ */
