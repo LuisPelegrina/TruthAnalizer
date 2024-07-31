@@ -10,7 +10,7 @@ The files ```CMakeLists.txt```, ```main.cpp``` and the folder ```cmake-build-deb
 The file "Includes.h" has all the root dependencies required for the code to run smoothly.
 
 ## LArSoft analizer
-The folder ```LArSoft_code``` contains the analizer used to generate trees with truth information about BNB neutrino events. The fhicls needed to run the analizer and extract the information from reco2 art-root files are also included. 
+The folder ```LArSoft_code``` contains the analizer used to generate trees with truth information about BNB neutrino events. The fhicls needed to run the analizer and extract the information from Generator+Geant4 art-root files are also included. 
 
 This analizer is meant to only be used with files containing a single neutrino interaction per LArSoft events, using it with a file with multiple interactions per event will not give a correct output. This code was created for sbndcode version v09_82_02_01.
 
@@ -24,4 +24,4 @@ The code ```scp.sh``` is meant to be run in the terminal and downloads the Data 
 The file ```tree_utils.cpp``` contains some helper functions to read the trees containing the truth information and the declaration of the variables contained in the truth trees. It also includes an explanation of each variable and information about the structure of the trees created by the analizer module, please refer to it in order to start using the truth trees.
 
 ## Code example
-The file ```read_tree.C``` is a code example to exemplify the use of the information inside the tree. As a starting point is heavely recommended to run it and try to understand how it works before jumping to use the trees for analysis. The code reads the tree contained in the folder "Data" and prints all its information on the terminal.
+The file ```read_tree.C``` is a code example to exemplify the use of the information inside the tree. As a starting point is heavely recommended to run it and try to understand how it works before jumping to use the trees for analysis. The code reads the tree contained in the folder ```Data``` and prints all its information on the terminal.
