@@ -12,7 +12,7 @@ The file "Includes.h" has all the root dependencies required for the code to run
 ## LArSoft analizer
 The folder ```LArSoft_code``` contains the analizer used to generate trees with truth information about BNB neutrino events. The fhicls needed to run the analizer and extract the information from Generator+Geant4 art-root files are also included. 
 
-This analizer is meant to only be used with files containing a single neutrino interaction per LArSoft events, using it with a file with multiple interactions per event will not give a correct output. This code was created for sbndcode version v09_82_02_01.
+This analizer is meant to only be used with files containing a single neutrino interaction per LArSoft events, using it with a file with multiple interactions per event will not give a correct output. This code was created for sbndcode version v09_82_02_01. The fhilc used for the generation of neutrino events was ```prodgenie_nu_singleinteraction_tpc_sbnd.fcl```.
 
 ## Data download
 The folder ```Data``` is where the analized files are meant to be stored in order to be used in the example ```read_tree.C```. These files can be found inside the sbnd-gvpms nodes in the folder ```/exp/sbnd/data/users/lpelegri/Truth_Example/``` under the name ```analysis_output_truth_BNB_single_100k_events.root``` for 100k events and ```analysis_output_truth_BNB_single_100_events.root``` for 100 events.
