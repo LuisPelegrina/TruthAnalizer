@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer/cmake-build-debug",
-		"source" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer"
+		"build" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub/cmake-build-debug",
+		"source" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub"
 	},
 	"version" : 
 	{

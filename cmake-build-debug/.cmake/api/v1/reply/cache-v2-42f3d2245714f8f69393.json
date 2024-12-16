@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer/cmake-build-debug"
+			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -383,7 +383,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -443,7 +443,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer"
+			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1559,7 +1559,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer/cmake-build-debug"
+			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub/cmake-build-debug"
 		},
 		{
 			"name" : "Truth_test_IS_TOP_LEVEL",
@@ -1583,7 +1583,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/TruthAnalizer"
+			"value" : "/Users/luispelegrinagutierrez/Desktop/Doctorado/Neutrino_Physics_Analisis/LarSoft_analyzers/Truth_Analizer_GitHub"
 		},
 		{
 			"name" : "VDT_INCLUDE_DIR",
