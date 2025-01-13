@@ -15,7 +15,7 @@ The folder ```LArSoft_code``` contains the analizer used to generate trees with 
 This analizer is meant to only be used with files containing a single neutrino interaction per LArSoft events, using it with a file with multiple interactions per event will not give a correct output. This code was created for sbndcode version v09_82_02_01. The fhilc used for the generation of neutrino events was ```prodgenie_nu_singleinteraction_tpc_sbnd.fcl```.
 
 ## Data download
-The folder ```Data``` is where the analized files are meant to be stored in order to be used in the example ```read_tree.C```. These files can be found inside the sbnd-gvpms nodes in the folder ```/exp/sbnd/data/users/lpelegri/Truth_Example/``` under the name ```analysis_output_truth_BNB_single_100k_events.root``` for 100k events and ```analysis_output_truth_BNB_single_100_events.root``` for 100 events.
+The folder ```Data``` is where the analized files are meant to be stored in order to be used in the example ```read_tree.C```. These files can be found inside the sbnd-gvpms nodes in the folder ```/exp/sbnd/data/users/lpelegri/other_data/example_truth_data/``` under the name ```analysis_output_truth_BNB_single_100k_events.root``` for 100k events and ```analysis_output_truth_BNB_single_100_events.root``` for 100 events.
 
 The code ```download_data.sh``` is meant to be run in the terminal and downloads the Data directly into the ```Data``` folder, please read it and modify it before usage. If you are unable to access these folder ask Luis Pelegrina Gutiérrez (lpelegrina@ugr.es) for the files (Or generate them by asking any person in the group able to run the LArSoft analysis chain).
 
